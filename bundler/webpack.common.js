@@ -15,7 +15,9 @@ module.exports = {
     output:
     {
         filename: 'bundle.[hash].js',
-        path: path.resolve(__dirname, '../dist')
+        path: path.resolve(__dirname, '../dist'),
+        library: "my-library",
+        libraryTarget: "umd" // exposes and know when to use module.exports or exports.
     },
     module:
     {

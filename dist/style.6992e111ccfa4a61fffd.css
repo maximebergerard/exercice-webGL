@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+/*# sourceMappingURL=style.6992e111ccfa4a61fffd.css.map*/
