@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import {MTLLoader, OBJLoader} from 'three-obj-mtl-loader'
 
 import Rocket from './js/Rocket.js'
+import Space from './js/Space.js'
 
 let renderer, scene, camera = []
 let right, up, at
@@ -14,32 +15,41 @@ directions.backward = false
 directions.left = false
 directions.right = false
 
+/**
+ * Textures
+ */
+const textureLoader = new THREE.TextureLoader()
+//
 
+/**
+ * Sizes
+ */
+const sizes = {}
+sizes.width = window.innerWidth
+sizes.height = window.innerHeight
+//
+
+/**
+ * Sizes
+ */
+window.addEventListener('resize', () =>
+{
+    // Update sizes
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+    
+    // Update camera
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
+    
+    // Update renderer
+    renderer.setSize(sizes.width, sizes.height)
+})
+//
 init()
 animate()
 
 function init() {
-    /**
-     * Sizes
-     */
-    const sizes = {}
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
-
-    window.addEventListener('resize', () =>
-    {
-        // Update sizes
-        sizes.width = window.innerWidth
-        sizes.height = window.innerHeight
-        
-        // Update camera
-        camera.aspect = sizes.width / sizes.height
-        camera.updateProjectionMatrix()
-        
-        // Update renderer
-        renderer.setSize(sizes.width, sizes.height)
-    })
-    //
 
     renderer = new THREE.WebGLRenderer()
     renderer.setSize(sizes.width, sizes.height)
@@ -51,7 +61,7 @@ function init() {
     at = new THREE.Vector3()
     
 
-    camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
+    camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 4000)
     camera.matrix.extractBasis(right,up,at)
     camera.position.y = 5
     
@@ -61,25 +71,6 @@ function init() {
     window.addEventListener("keydown", onKeyDown, false)
     window.addEventListener("keyup", onKeyUp, false)
 
-    window.addEventListener('mousemove', (_event) =>
-    {
-        cursor.x = _event.clientX / sizes.width - 0.5
-        cursor.y = _event.clientY / sizes.height - 0.5
-        
-        let box = {}
-        box.minX = Math.abs(sizes.width - 400) / 2
-        box.maxX = box.minX + 400
-        
-        if(_event.clientX < box.minX) {
-            rotation = Math.min(0.1, 0.0001 * (box.minX - _event.clientX))
-        }
-        else if(_event.clientX > box.maxX) {
-            rotation = Math.max(-0.1, -0.0001 * (_event.clientX - box.maxX))
-        }
-        else {
-            rotation = 0
-        }
-    })
 }
 
 /**
@@ -170,8 +161,21 @@ function onKeyUp(e) {
  * Cursor
  */
 const cursor = {}
-cursor.x = 0
-cursor.y = 0
+cursor.x = sizes.width / 2
+cursor.y = sizes.height / 2
+
+const updateRotation = (x, y) => 
+{
+    camera.rotateY(x * - 0.01)
+    camera.rotateX(y * - 0.01)
+}
+window.addEventListener('mousemove', (_event) =>
+{
+    cursor.x += _event.movementX
+    cursor.y += _event.movementY
+    updateRotation(_event.movementX, _event.movementY)
+})
+
 
 /**
  * Lights 
@@ -185,36 +189,47 @@ scene.add(skyLight)
  * Rocket
  */
 
-const rocket = new Rocket()
+const rocket = new Rocket({
+    textureLoader: textureLoader
+})
 scene.add(rocket.container)
 
-import rocketObject from './assets/roket.obj'
-import rocketMaterials from './assets/roket.mtl'
+import rocketObject from './assets/CartoonRocket.obj'
+import rocketMaterials from './assets/CartoonRocket.mtl'
 
 const mtlLoader = new MTLLoader()
 const objLoader = new OBJLoader()
-
 
 mtlLoader.load(rocketMaterials, (materials) => {
     materials.preload()
     objLoader.setMaterials(materials)
     objLoader.load(rocketObject, (object) => {
-        object.scale.x = 0.2
-        object.scale.y = 0.2
-        object.scale.z = 0.2
+        object.scale.x = 12
+        object.scale.y = 12
+        object.scale.z = 12
+        object.position.x = 220
+        object.position.y = 300
 
         function rotateObject(object, degreeX = 0, degreeY = 0, degreeZ = 0) {
             object.rotateX(THREE.Math.degToRad(degreeX))
             object.rotateY(THREE.Math.degToRad(degreeY))
             object.rotateZ(THREE.Math.degToRad(degreeZ))
         }
-        rotateObject(object, -90, 0, 0)
+        rotateObject(object, 0, 0, 40)
 
         scene.add(object)
     })
 })
 //
 
+/**
+ * Space background
+ */
+const space = new Space({
+    textureLoader: textureLoader
+})
+scene.add(space.container)
+//
 /**
  * Loop
  */
