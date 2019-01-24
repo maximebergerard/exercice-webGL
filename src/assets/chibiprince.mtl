@@ -1,0 +1,30 @@
+# MTL
+
+newmtl head_mtl
+	map_Kd ./images/chibiprince_head.png
+
+
+newmtl body_mtl
+	map_Kd ./images/chibiprince_body.png
+
+
+newmtl eyeballs_mtl
+	map_Kd ./images/chibiprince_eyeballs.png
+
+
+newmtl pupils_mtl
+	map_Kd ./images/chibiprince_pupils.png
+
+
+newmtl arms_mtl
+	map_Kd ./images/chibiprince_arms.png
+
+
+newmtl blue_mtl
+	map_Kd ./images/chibiprince_blue.png
+
+
+newmtl scarf_mtl
+	map_Kd ./images/chibiprince_scarf.png
+
+

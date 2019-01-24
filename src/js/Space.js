@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import spaceDiffuseSource from '../images/textures/space2.jpg'
+import spaceDiffuseSource from '../images/textures/space.jpg'
 
 export default class Space
 {
@@ -16,12 +16,12 @@ export default class Space
     setBackground()
     {
         this.globe = {}
-        this.globe.geometry = new THREE.SphereBufferGeometry(2000, 100, 100)
+        this.globe.geometry = new THREE.SphereBufferGeometry(4000, 100, 100)
         this.globe.material = new THREE.MeshStandardMaterial({
             map: this.textureLoader.load(spaceDiffuseSource),
             metalness: 0.3, 
             roughness: 0.8, 
-            side: THREE.DoubleSide
+            side: THREE.BackSide
         })
         this.globe.mesh = new THREE.Mesh(this.globe.geometry, this.globe.material)
         this.container.add(this.globe.mesh)

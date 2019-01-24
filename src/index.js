@@ -1,10 +1,11 @@
 import './css/style.styl'
 
 import * as THREE from 'three'
-import {MTLLoader, OBJLoader} from 'three-obj-mtl-loader'
 
 import Rocket from './js/Rocket.js'
 import Space from './js/Space.js'
+import LittlePrince from './js/LittlePrince.js'
+import Button from './js/Button.js';
 
 let renderer, scene, camera = []
 let right, up, at
@@ -45,47 +46,31 @@ window.addEventListener('resize', () =>
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
 })
-//
-init()
-animate()
 
-function init() {
 
-    renderer = new THREE.WebGLRenderer()
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.shadowMap.enabled = true
-    document.body.appendChild(renderer.domElement)
+renderer = new THREE.WebGLRenderer()
+renderer.setSize(sizes.width, sizes.height)
+renderer.shadowMap.enabled = true
+document.body.appendChild(renderer.domElement)
 
-    right = new THREE.Vector3()
-    up = new THREE.Vector3()
-    at = new THREE.Vector3()
+right = new THREE.Vector3()
+up = new THREE.Vector3()
+at = new THREE.Vector3()
     
 
-    camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 4000)
-    camera.matrix.extractBasis(right,up,at)
-    camera.position.y = 5
-    
-    scene = new THREE.Scene()
-    scene.add(camera) 
+camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 8000)
+camera.matrix.extractBasis(right,up,at)
+camera.position.y = 0
+camera.position.x = 0    
+scene = new THREE.Scene()
+scene.add(camera) 
 
-    window.addEventListener("keydown", onKeyDown, false)
-    window.addEventListener("keyup", onKeyUp, false)
+window.addEventListener("keydown", onKeyDown, false)
+window.addEventListener("keyup", onKeyUp, false)
 
-}
-
-/**
- * Scene
- */
-// const scene = new THREE.Scene()
-
-/**
- * Camera
- */
-// const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
-// scene.add(camera)
-
-function animate() {
-    requestAnimationFrame(animate)
+const animate = () =>  
+{
+    window.requestAnimationFrame(animate)
     camera.rotation.y += rotation
     camera.matrix.extractBasis(right,up,at)
     if(directions.forward) {
@@ -106,6 +91,7 @@ function animate() {
     }
     renderer.render(scene, camera)
 }
+animate()
 
 function onKeyDown(e) {
     switch(e.keyCode) {
@@ -155,8 +141,6 @@ function onKeyUp(e) {
     }
 }
 
-
-
 /**
  * Cursor
  */
@@ -176,60 +160,48 @@ window.addEventListener('mousemove', (_event) =>
     updateRotation(_event.movementX, _event.movementY)
 })
 
-
 /**
  * Lights 
  */
-
 const skyLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 3 )
 skyLight.position.x = 0
 scene.add(skyLight)
+//
 
 /**
- * Rocket
+ * Rocket + moon
  */
-
 const rocket = new Rocket({
     textureLoader: textureLoader
 })
 scene.add(rocket.container)
-
-import rocketObject from './assets/CartoonRocket.obj'
-import rocketMaterials from './assets/CartoonRocket.mtl'
-
-const mtlLoader = new MTLLoader()
-const objLoader = new OBJLoader()
-
-mtlLoader.load(rocketMaterials, (materials) => {
-    materials.preload()
-    objLoader.setMaterials(materials)
-    objLoader.load(rocketObject, (object) => {
-        object.scale.x = 12
-        object.scale.y = 12
-        object.scale.z = 12
-        object.position.x = 220
-        object.position.y = 300
-
-        function rotateObject(object, degreeX = 0, degreeY = 0, degreeZ = 0) {
-            object.rotateX(THREE.Math.degToRad(degreeX))
-            object.rotateY(THREE.Math.degToRad(degreeY))
-            object.rotateZ(THREE.Math.degToRad(degreeZ))
-        }
-        rotateObject(object, 0, 0, 40)
-
-        scene.add(object)
-    })
-})
 //
 
 /**
  * Space background
+ */
+const littlePrince = new LittlePrince({
+    textureLoader: textureLoader
+})
+scene.add(littlePrince.container)
+//
+
+/**
+ * Little prince + sphere
  */
 const space = new Space({
     textureLoader: textureLoader
 })
 scene.add(space.container)
 //
+
+/**
+ * Button
+ */
+const button = new Button()
+scene.add(button.container)
+//
+
 /**
  * Loop
  */
